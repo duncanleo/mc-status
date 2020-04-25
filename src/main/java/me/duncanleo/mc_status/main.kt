@@ -1,4 +1,4 @@
-package me.duncanleo.spigot_plugin_base
+package me.duncanleo.mc_status
 
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.event.Listener
