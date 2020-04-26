@@ -1,5 +1,6 @@
 package me.duncanleo.mc_status
 
+import com.github.kittinunf.fuel.core.extensions.jsonBody
 import me.duncanleo.mc_status.util.TPSUtil
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -11,9 +12,15 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.DisplaySlot
 import java.lang.Exception
-import kotlin.math.abs
+import com.github.kittinunf.fuel.httpPost
+import com.squareup.moshi.Moshi
+import me.duncanleo.mc_status.model.discord.DiscordWebhookPayload
+import me.duncanleo.mc_status.model.discord.Embed
+import me.duncanleo.mc_status.model.discord.EmbedField
+import org.bukkit.event.EventHandler
 
 const val TIME_NIGHT = 13000
+const val CONFIG_KEY_WEBHOOK_URL = "webhook_url"
 
 class App : JavaPlugin(), Listener {
   override fun onEnable() {
@@ -22,7 +29,9 @@ class App : JavaPlugin(), Listener {
     server.pluginManager.registerEvents(this, this)
     TPSUtil.registerTask(this)
 
-    object: BukkitRunnable() {
+    saveDefaultConfig()
+
+    object : BukkitRunnable() {
       override fun run() {
         val scoreboardManager = Bukkit.getScoreboardManager()
         val tps = TPSUtil.tps
@@ -45,7 +54,7 @@ class App : JavaPlugin(), Listener {
 
           // Server Free RAM score
           val freeRAMScore = objective?.getScore("${ChatColor.DARK_AQUA}Free RAM (MB)")
-          freeRAMScore?.score = (freeMemory / 1024L/ 1024L).toInt()
+          freeRAMScore?.score = (freeMemory / 1024L / 1024L).toInt()
 
           // Server Total RAM score
           val totalRAMScore = objective?.getScore("${ChatColor.DARK_AQUA}Total RAM (MB)")
@@ -55,7 +64,7 @@ class App : JavaPlugin(), Listener {
           val isDay = it.world.time < TIME_NIGHT
           val entryToSet = "${ChatColor.GREEN}Time to ${if (isDay) "Night" else "Day"} (s)"
           val entryToRemove = "${ChatColor.GREEN}Time to ${if (isDay) "Day" else "Night"} (s)"
-          val duration = if (isDay) TIME_NIGHT - it.world.time  else 24000 - it.world.time + 1000L
+          val duration = if (isDay) TIME_NIGHT - it.world.time else 24000 - it.world.time + 1000L
           scoreboard?.resetScores(entryToRemove)
 
           val timeScore = objective?.getScore(entryToSet)
@@ -73,12 +82,80 @@ class App : JavaPlugin(), Listener {
     }.runTaskTimer(this, 20 * 3, 20 * 5)
   }
 
+  @EventHandler
   fun playerJoined(event: PlayerJoinEvent) {
+    if (config.get(CONFIG_KEY_WEBHOOK_URL) == null) {
+      return
+    }
 
+    val payload = DiscordWebhookPayload(
+            username = "Minecraft",
+            embeds = arrayOf(
+                    Embed(
+                            title = "A player joined the server",
+                            description = ChatColor.stripColor(event.player.displayName) ?: event.player.displayName,
+                            fields = arrayOf(
+                                    EmbedField(
+                                            name = "Current no. of players",
+                                            value = Bukkit.getOnlinePlayers().size.toString()
+                                    )
+                            )
+                    )
+            )
+    )
+
+    object: BukkitRunnable() {
+      override fun run() {
+        publishDiscordWebhook(webhookURL = config.get(CONFIG_KEY_WEBHOOK_URL) as String, payload = payload)
+      }
+    }.run()
   }
 
+  @EventHandler
   fun playerLeft(event: PlayerQuitEvent) {
+    if (config.get(CONFIG_KEY_WEBHOOK_URL) == null) {
+      return
+    }
 
+    val payload = DiscordWebhookPayload(
+            username = "Minecraft",
+            embeds = arrayOf(
+                    Embed(
+                            title = "A player left the server",
+                            description = ChatColor.stripColor(event.player.displayName) ?: event.player.displayName,
+                            fields = arrayOf(
+                                    EmbedField(
+                                            name = "Current no. of players",
+                                            value = Bukkit.getOnlinePlayers().size.toString()
+                                    )
+                            )
+                    )
+            )
+    )
+
+    object: BukkitRunnable() {
+      override fun run() {
+        publishDiscordWebhook(webhookURL = config.get(CONFIG_KEY_WEBHOOK_URL) as String, payload = payload)
+      }
+    }.run()
+  }
+
+  private fun publishDiscordWebhook(webhookURL: String, payload: DiscordWebhookPayload) {
+    val moshi = Moshi.Builder().build()
+    val payloadEncoded = moshi
+            .adapter(DiscordWebhookPayload::class.java)
+            .toJson(payload)
+
+    webhookURL
+            .httpPost()
+            .jsonBody(payloadEncoded)
+            .header("User-Agent", "MCStatus ${description.version}")
+            .also {
+              logger.info(it.toString())
+            }
+            .response { result ->
+              logger.info(result.toString())
+            }
   }
 
   /**

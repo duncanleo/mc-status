@@ -7,9 +7,11 @@
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 plugins {
   kotlin("jvm") version "1.3.72"
+  kotlin("kapt") version "1.3.72"
   id("com.github.johnrengelman.shadow") version "5.1.0"
   java
 }
@@ -28,6 +30,9 @@ dependencies {
   implementation(kotlin("stdlib"))
 
   implementation("org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT")
+  implementation("com.github.kittinunf.fuel:fuel:2.2.2")
+  implementation("com.squareup.moshi:moshi:1.9.2")
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.2")
 }
 
 tasks.withType<KotlinCompile> {
