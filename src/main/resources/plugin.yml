@@ -1,4 +1,4 @@
 main: me.duncanleo.mc_status.App
-name: SpigotPluginBase
+name: MCStatus
 version: '0.1'
 api: '1'
