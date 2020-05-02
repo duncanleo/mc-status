@@ -61,13 +61,9 @@ class App : JavaPlugin(), Listener {
           val tpsScore = objective?.getScore("${ChatColor.DARK_AQUA}Tick/sec")
           tpsScore?.score = tps.toInt()
 
-          // Server Free RAM score
-          val freeRAMScore = objective?.getScore("${ChatColor.DARK_AQUA}Free RAM (MB)")
-          freeRAMScore?.score = (freeMemory / 1024L / 1024L).toInt()
-
-          // Server Total RAM score
-          val totalRAMScore = objective?.getScore("${ChatColor.DARK_AQUA}Total RAM (MB)")
-          totalRAMScore?.score = (totalMemory / 1024L / 1024L).toInt()
+          // RAM usage score
+          val ramUsageScore = objective?.getScore("${ChatColor.DARK_AQUA}RAM Usage (%)")
+          ramUsageScore?.score = ((freeMemory / totalMemory) * 100.0).toInt()
 
           // Time to day/night
           val isDay = it.world.time < TIME_NIGHT
