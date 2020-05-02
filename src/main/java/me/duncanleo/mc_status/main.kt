@@ -10,6 +10,7 @@ import me.duncanleo.mc_status.util.TPSUtil
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
+import org.bukkit.entity.ExperienceOrb
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -89,7 +90,7 @@ class App : JavaPlugin(), Listener {
 
           // Check location
           if (playerLocationMap[it.uniqueId]?.block?.biome != it.location.block.biome) {
-            it.sendMessage("${ChatColor.DARK_AQUA}Welcome to the ${ChatColor.AQUA}${it.location.block.biome.name.capitalize()} ${ChatColor.DARK_AQUA}")
+            it.sendMessage("${ChatColor.DARK_AQUA}Welcome to the ${ChatColor.AQUA}${it.location.block.biome.name.capitalizeBukkitEnumName()} ${ChatColor.DARK_AQUA}")
           }
           playerLocationMap[it.uniqueId] = it.location
         }
@@ -162,14 +163,24 @@ class App : JavaPlugin(), Listener {
       return
     }
 
+    val player = event.target as Player
+
+    when (event.target) {
+      is ExperienceOrb -> {
+        return
+      }
+    }
+
     when (event.reason) {
       EntityTargetEvent.TargetReason.TARGET_DIED,
-      EntityTargetEvent.TargetReason.FORGOT_TARGET,
       EntityTargetEvent.TargetReason.TEMPT -> {
         return
       }
+      EntityTargetEvent.TargetReason.FORGOT_TARGET -> {
+        player.sendMessage("${ChatColor.DARK_AQUA}You are no longer being targeted by a ${ChatColor.AQUA}${event.entity.type.name.capitalizeBukkitEnumName()}.")
+      }
       else -> {
-        (event.target as Player).sendMessage("${ChatColor.DARK_AQUA}You are being ${ChatColor.RED}targeted by a ${ChatColor.AQUA}${event.entity.type.name.capitalize()}. ${ChatColor.DARK_AQUA}Reason: ${ChatColor.AQUA}{event.reason.name.capitalize()}")
+        player.sendMessage("${ChatColor.DARK_AQUA}You are being ${ChatColor.RED}targeted ${ChatColor.DARK_AQUA}by a ${ChatColor.AQUA}${event.entity.type.name.capitalizeBukkitEnumName()}. ${ChatColor.DARK_AQUA}Reason: ${ChatColor.AQUA}${event.reason.name.capitalizeBukkitEnumName()}")
       }
     }
   }
@@ -210,4 +221,8 @@ class App : JavaPlugin(), Listener {
 
       return -1
     }
+
+  private fun String.capitalizeBukkitEnumName(): String {
+    return this.toLowerCase().replace("_", " ").capitalize()
+  }
 }
