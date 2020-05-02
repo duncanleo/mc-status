@@ -1,28 +1,31 @@
 package me.duncanleo.mc_status
 
 import com.github.kittinunf.fuel.core.extensions.jsonBody
-import me.duncanleo.mc_status.util.TPSUtil
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scoreboard.DisplaySlot
-import java.lang.Exception
 import com.github.kittinunf.fuel.httpPost
 import com.squareup.moshi.Moshi
 import me.duncanleo.mc_status.model.discord.DiscordWebhookPayload
 import me.duncanleo.mc_status.model.discord.Embed
 import me.duncanleo.mc_status.model.discord.EmbedField
+import me.duncanleo.mc_status.util.TPSUtil
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
+import org.bukkit.Location
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scoreboard.DisplaySlot
+import java.util.*
 
 const val TIME_NIGHT = 13000
 const val CONFIG_KEY_WEBHOOK_URL = "webhook_url"
 
 class App : JavaPlugin(), Listener {
+  val playerLocationMap = mutableMapOf<UUID, Location>()
+
   override fun onEnable() {
     logger.info("Hello there!")
 
@@ -74,9 +77,16 @@ class App : JavaPlugin(), Listener {
           val pingScore = objective?.getScore("${ChatColor.AQUA}Ping (ms)")
           pingScore?.score = it.ping
 
+          // SCOREBOARD!
           if (scoreboard != null) {
             it.scoreboard = scoreboard
           }
+
+          // Check location
+          if (playerLocationMap[it.uniqueId]?.block?.biome != it.location.block.biome) {
+            it.sendMessage("${ChatColor.DARK_AQUA}Welcome to the ${ChatColor.AQUA}{event.to?.block?.biome?.name?.capitalize()} ${ChatColor.DARK_AQUA}")
+          }
+          playerLocationMap[it.uniqueId] = it.location
         }
       }
     }.runTaskTimer(this, 20 * 3, 20 * 5)
@@ -113,6 +123,7 @@ class App : JavaPlugin(), Listener {
 
   @EventHandler
   fun playerLeft(event: PlayerQuitEvent) {
+    playerLocationMap.remove(event.player.uniqueId)
     if (config.get(CONFIG_KEY_WEBHOOK_URL) == null) {
       return
     }
