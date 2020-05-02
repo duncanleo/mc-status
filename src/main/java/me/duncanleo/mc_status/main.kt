@@ -63,7 +63,7 @@ class App : JavaPlugin(), Listener {
 
           // RAM usage score
           val ramUsageScore = objective?.getScore("${ChatColor.DARK_AQUA}RAM Usage (%)")
-          ramUsageScore?.score = ((freeMemory / totalMemory) * 100.0).toInt()
+          ramUsageScore?.score = ((freeMemory.toDouble() / totalMemory.toDouble()) * 100.0).toInt()
 
           // Time to day/night
           val isDay = it.world.time < TIME_NIGHT
