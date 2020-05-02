@@ -58,7 +58,7 @@ class App : JavaPlugin(), Listener {
           objective?.displaySlot = DisplaySlot.SIDEBAR
 
           // TPS score
-          val tpsScore = objective?.getScore("${ChatColor.DARK_AQUA}Tick/sec")
+          val tpsScore = objective?.getScore("${ChatColor.DARK_AQUA}TPS")
           tpsScore?.score = tps.toInt()
 
           // RAM usage score
