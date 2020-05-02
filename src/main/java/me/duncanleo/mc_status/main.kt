@@ -36,6 +36,10 @@ class App : JavaPlugin(), Listener {
 
     object : BukkitRunnable() {
       override fun run() {
+        if (Bukkit.getOnlinePlayers().isEmpty()) {
+          return
+        }
+
         val scoreboardManager = Bukkit.getScoreboardManager()
         val tps = TPSUtil.tps
 
