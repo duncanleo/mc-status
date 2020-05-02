@@ -126,7 +126,7 @@ class App : JavaPlugin(), Listener {
                             fields = arrayOf(
                                     EmbedField(
                                             name = "Current no. of players",
-                                            value = Bukkit.getOnlinePlayers().size.toString()
+                                            value = (Bukkit.getOnlinePlayers().size - 1).toString()
                                     )
                             )
                     )
