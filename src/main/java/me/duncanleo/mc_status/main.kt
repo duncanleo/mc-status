@@ -88,7 +88,7 @@ class App : JavaPlugin(), Listener {
 
           // Check location
           if (playerLocationMap[it.uniqueId]?.block?.biome != it.location.block.biome) {
-            it.sendMessage("${ChatColor.DARK_AQUA}Welcome to the ${ChatColor.AQUA}{event.to?.block?.biome?.name?.capitalize()} ${ChatColor.DARK_AQUA}")
+            it.sendMessage("${ChatColor.DARK_AQUA}Welcome to the ${ChatColor.AQUA}${it.location.block.biome.name.capitalize()} ${ChatColor.DARK_AQUA}")
           }
           playerLocationMap[it.uniqueId] = it.location
         }
