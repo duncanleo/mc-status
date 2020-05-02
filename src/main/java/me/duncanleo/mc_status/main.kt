@@ -13,6 +13,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
@@ -118,7 +119,7 @@ class App : JavaPlugin(), Listener {
             )
     )
 
-    object: BukkitRunnable() {
+    object : BukkitRunnable() {
       override fun run() {
         publishDiscordWebhook(webhookURL = config.get(CONFIG_KEY_WEBHOOK_URL) as String, payload = payload)
       }
@@ -148,11 +149,29 @@ class App : JavaPlugin(), Listener {
             )
     )
 
-    object: BukkitRunnable() {
+    object : BukkitRunnable() {
       override fun run() {
         publishDiscordWebhook(webhookURL = config.get(CONFIG_KEY_WEBHOOK_URL) as String, payload = payload)
       }
     }.run()
+  }
+
+  @EventHandler
+  fun entityTarget(event: EntityTargetEvent) {
+    if (event.target !is Player) {
+      return
+    }
+
+    when (event.reason) {
+      EntityTargetEvent.TargetReason.TARGET_DIED,
+      EntityTargetEvent.TargetReason.FORGOT_TARGET,
+      EntityTargetEvent.TargetReason.TEMPT -> {
+        return
+      }
+      else -> {
+        (event.target as Player).sendMessage("${ChatColor.DARK_AQUA}You are being ${ChatColor.RED}targeted by a ${ChatColor.AQUA}${event.entity.type.name.capitalize()}. ${ChatColor.DARK_AQUA}Reason: ${ChatColor.AQUA}{event.reason.name.capitalize()}")
+      }
+    }
   }
 
   private fun publishDiscordWebhook(webhookURL: String, payload: DiscordWebhookPayload) {
