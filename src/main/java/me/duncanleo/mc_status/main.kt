@@ -181,6 +181,14 @@ class App : JavaPlugin(), Listener {
     }
   }
 
+  @EventHandler
+  fun breedEntity(event: EntityBreedEvent) {
+    if (event.breeder !is Player) {
+      return
+    }
+    val player = event.breeder as Player
+    Bukkit.broadcastMessage("${ChatColor.GREEN}${player.displayName} ${ChatColor.DARK_GREEN}just bred a ${ChatColor.GREEN}${event.entityType.name.capitalizeBukkitEnumName()} ${ChatColor.DARK_GREEN}and earned ${ChatColor.GREEN}${event.experience} exp")
+  }
   private fun publishDiscordWebhook(webhookURL: String, payload: DiscordWebhookPayload) {
     val moshi = Moshi.Builder().build()
     val payloadEncoded = moshi
