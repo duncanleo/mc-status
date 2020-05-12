@@ -10,17 +10,22 @@ import me.duncanleo.mc_status.util.TPSUtil
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
-import org.bukkit.entity.ExperienceOrb
-import org.bukkit.entity.Player
+import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityBreedEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityTargetEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.DisplaySlot
 import java.util.*
+import kotlin.math.roundToInt
 
 const val TIME_NIGHT = 13000
 const val CONFIG_KEY_WEBHOOK_URL = "webhook_url"
@@ -165,6 +170,10 @@ class App : JavaPlugin(), Listener {
       is ExperienceOrb -> {
         return
       }
+      is Monster -> {
+        val monster = (event.entity as Monster)
+        monster.displayHealth()
+      }
     }
 
     when (event.reason) {
@@ -181,6 +190,17 @@ class App : JavaPlugin(), Listener {
     }
   }
 
+  @EventHandler
+  fun entityDamageByOtherEntity(event: EntityDamageByEntityEvent) {
+    if (event.damager !is Player) {
+      return
+    }
+    if (event.entity !is Monster) {
+      return
+    }
+    val monster = (event.entity as Monster)
+    monster.displayHealth()
+  }
   @EventHandler
   fun breedEntity(event: EntityBreedEvent) {
     if (event.breeder !is Player) {
@@ -228,5 +248,11 @@ class App : JavaPlugin(), Listener {
 
   private fun String.capitalizeBukkitEnumName(): String {
     return this.toLowerCase().replace("_", " ").capitalize()
+  }
+
+  private fun Monster.displayHealth() {
+    val maxHealth = this.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 0.0
+    this.customName = "${(this.health / maxHealth).roundToInt()}%"
+    this.isCustomNameVisible = true
   }
 }
