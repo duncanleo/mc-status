@@ -161,7 +161,7 @@ class App : JavaPlugin(), Listener {
 
     val player = event.target as Player
 
-    when (event.target) {
+    when (event.entity) {
       is ExperienceOrb -> {
         return
       }
