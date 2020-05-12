@@ -7,10 +7,7 @@ import me.duncanleo.mc_status.model.discord.DiscordWebhookPayload
 import me.duncanleo.mc_status.model.discord.Embed
 import me.duncanleo.mc_status.model.discord.EmbedField
 import me.duncanleo.mc_status.util.TPSUtil
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.Location
-import org.bukkit.Material
+import org.bukkit.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
@@ -201,6 +198,34 @@ class App : JavaPlugin(), Listener {
     val monster = (event.entity as Monster)
     monster.displayHealth()
   }
+
+  @EventHandler
+  fun entityRightClick(event: PlayerInteractEntityEvent) {
+    if (event.player.inventory.itemInMainHand.type != Material.AIR) {
+      return
+    }
+    val rightClicked = event.rightClicked
+    val sb = StringBuilder()
+    sb.appendln("${ChatColor.DARK_GREEN}Entity Info")
+    sb.appendln("${ChatColor.DARK_GREEN}-----------")
+    sb.appendln("${ChatColor.DARK_GREEN}Type: ${ChatColor.GREEN}${rightClicked.type.name.capitalizeBukkitEnumName()}")
+
+    if (rightClicked is LivingEntity) {
+      val maxHealth = rightClicked.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 0.0
+      sb.appendln("${ChatColor.DARK_GREEN}Health: ${ChatColor.GREEN}${(rightClicked.health / maxHealth).roundToInt()}%")
+    }
+
+    if (rightClicked.name.isNotEmpty()) {
+      sb.appendln("${ChatColor.DARK_GREEN}Name: ${ChatColor.GREEN}${rightClicked.name}")
+    }
+
+    if (rightClicked is Tameable) {
+      val isTamed = rightClicked.isTamed
+      val ownerName = rightClicked.owner?.name
+      sb.appendln("${ChatColor.DARK_GREEN}Tamed: ${if (isTamed) "by ${ChatColor.GREEN}$ownerName" else "no"}")
+    }
+  }
+
   @EventHandler
   fun breedEntity(event: EntityBreedEvent) {
     if (event.breeder !is Player) {
@@ -209,6 +234,7 @@ class App : JavaPlugin(), Listener {
     val player = event.breeder as Player
     Bukkit.broadcastMessage("${ChatColor.GREEN}${player.displayName} ${ChatColor.DARK_GREEN}just bred a ${ChatColor.GREEN}${event.entityType.name.capitalizeBukkitEnumName()} ${ChatColor.DARK_GREEN}and earned ${ChatColor.GREEN}${event.experience} exp")
   }
+
   private fun publishDiscordWebhook(webhookURL: String, payload: DiscordWebhookPayload) {
     val moshi = Moshi.Builder().build()
     val payloadEncoded = moshi
