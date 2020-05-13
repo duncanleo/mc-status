@@ -224,6 +224,8 @@ class App : JavaPlugin(), Listener {
       val ownerName = rightClicked.owner?.name
       sb.appendln("${ChatColor.DARK_GREEN}Tamed: ${if (isTamed) "by ${ChatColor.GREEN}$ownerName" else "no"}")
     }
+
+    event.player.sendMessage(sb.toString())
   }
 
   @EventHandler
