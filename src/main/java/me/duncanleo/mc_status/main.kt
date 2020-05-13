@@ -206,13 +206,14 @@ class App : JavaPlugin(), Listener {
     }
     val rightClicked = event.rightClicked
     val sb = StringBuilder()
+    sb.appendln("${ChatColor.DARK_GREEN}-----------")
     sb.appendln("${ChatColor.DARK_GREEN}Entity Info")
     sb.appendln("${ChatColor.DARK_GREEN}-----------")
     sb.appendln("${ChatColor.DARK_GREEN}Type: ${ChatColor.GREEN}${rightClicked.type.name.capitalizeBukkitEnumName()}")
 
     if (rightClicked is LivingEntity) {
       val maxHealth = rightClicked.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 0.0
-      sb.appendln("${ChatColor.DARK_GREEN}Health: ${ChatColor.GREEN}${(rightClicked.health / maxHealth).roundToInt()}%")
+      sb.appendln("${ChatColor.DARK_GREEN}Health: ${ChatColor.GREEN}${(rightClicked.health / maxHealth * 100.0).roundToInt()}%")
     }
 
     if (rightClicked.name.isNotEmpty()) {
