@@ -13,7 +13,7 @@ import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityBreedEvent
-import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerJoinEvent
@@ -188,10 +188,7 @@ class App : JavaPlugin(), Listener {
   }
 
   @EventHandler
-  fun entityDamageByOtherEntity(event: EntityDamageByEntityEvent) {
-    if (event.damager !is Player) {
-      return
-    }
+  fun entityDamageByOtherEntity(event: EntityDamageEvent) {
     if (event.entity !is Monster) {
       return
     }
