@@ -278,7 +278,7 @@ class App : JavaPlugin(), Listener {
 
   private fun Monster.displayHealth() {
     val maxHealth = this.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 0.0
-    this.customName = "${(this.health / maxHealth * 100.0).roundToInt()}%"
+    this.customName = "${ChatColor.RED}${(this.health / maxHealth * 100.0).roundToInt()}%"
     this.isCustomNameVisible = true
   }
 }
