@@ -273,7 +273,11 @@ class App : JavaPlugin(), Listener {
     }
 
   private fun String.capitalizeBukkitEnumName(): String {
-    return this.toLowerCase().replace("_", " ").capitalize()
+    return this
+            .toLowerCase()
+            .replace("_", " ")
+            .split(" ")
+            .joinToString(" ") { it.capitalize() }
   }
 
   private fun Monster.displayHealth() {
