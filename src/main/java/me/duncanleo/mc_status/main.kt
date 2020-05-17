@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityBreedEvent
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityTameEvent
 import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
@@ -239,6 +240,12 @@ class App : JavaPlugin(), Listener {
     }
     val player = event.breeder as Player
     Bukkit.broadcastMessage("${ChatColor.GREEN}${player.displayName} ${ChatColor.DARK_GREEN}just bred a ${ChatColor.GREEN}${event.entityType.name.capitalizeBukkitEnumName()} ${ChatColor.DARK_GREEN}and earned ${ChatColor.GREEN}${event.experience} exp")
+  }
+
+  @EventHandler
+  fun tameEntity(event: EntityTameEvent) {
+    val player = event.owner as Player
+    Bukkit.broadcastMessage("${ChatColor.GREEN}${player.displayName} ${ChatColor.DARK_GREEN}just tamed a ${ChatColor.GREEN}${event.entityType.name.capitalizeBukkitEnumName()}")
   }
 
   private fun publishDiscordWebhook(webhookURL: String, payload: DiscordWebhookPayload) {
