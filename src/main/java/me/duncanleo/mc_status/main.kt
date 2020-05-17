@@ -15,6 +15,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityBreedEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityTargetEvent
+import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -153,6 +154,11 @@ class App : JavaPlugin(), Listener {
         publishDiscordWebhook(webhookURL = config.get(CONFIG_KEY_WEBHOOK_URL) as String, payload = payload)
       }
     }.run()
+  }
+
+  @EventHandler
+  fun playerChangedWorld(event: PlayerChangedWorldEvent) {
+    Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}went to the ${ChatColor.GOLD}${event.player.location.world?.name}")
   }
 
   @EventHandler
