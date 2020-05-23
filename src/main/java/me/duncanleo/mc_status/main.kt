@@ -16,13 +16,13 @@ import org.bukkit.event.entity.EntityBreedEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityTameEvent
 import org.bukkit.event.entity.EntityTargetEvent
-import org.bukkit.event.player.PlayerChangedWorldEvent
-import org.bukkit.event.player.PlayerInteractEntityEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.*
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.DisplaySlot
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -96,6 +96,13 @@ class App : JavaPlugin(), Listener {
         }
       }
     }.runTaskTimer(this, 20 * 3, 20 * 5)
+
+    object: BukkitRunnable() {
+      override fun run() {
+        val currentTime = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME)
+        Bukkit.broadcastMessage("${ChatColor.DARK_PURPLE}It is now ${ChatColor.LIGHT_PURPLE}$currentTime ${ChatColor.DARK_PURPLE} in Singapore")
+      }
+    }.runTaskTimer(this, 20 * 4, 20 * 60 * 30)
   }
 
   @EventHandler
@@ -246,6 +253,13 @@ class App : JavaPlugin(), Listener {
   fun tameEntity(event: EntityTameEvent) {
     val player = event.owner as Player
     Bukkit.broadcastMessage("${ChatColor.GREEN}${player.displayName} ${ChatColor.DARK_GREEN}just tamed a ${ChatColor.GREEN}${event.entityType.name.capitalizeBukkitEnumName()}")
+  }
+
+  @EventHandler
+  fun exp(event: PlayerExpChangeEvent) {
+    if (event.player.expToLevel <= event.amount) {
+      Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}just levelled up to ${ChatColor.GOLD}${event.player.level + 1}")
+    }
   }
 
   private fun publishDiscordWebhook(webhookURL: String, payload: DiscordWebhookPayload) {
