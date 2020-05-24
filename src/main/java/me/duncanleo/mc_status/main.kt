@@ -212,14 +212,14 @@ class App : JavaPlugin(), Listener {
 
   @EventHandler
   fun entityRightClick(event: PlayerInteractEntityEvent) {
-    if (event.player.inventory.itemInMainHand.type != Material.AIR) {
+    if (event.player.inventory.itemInMainHand.type != Material.AIR || event.rightClicked !is LivingEntity) {
       return
     }
     val rightClicked = event.rightClicked
     val sb = StringBuilder()
-    sb.appendln("${ChatColor.DARK_GREEN}-----------")
-    sb.appendln("${ChatColor.DARK_GREEN}Entity Info")
-    sb.appendln("${ChatColor.DARK_GREEN}-----------")
+    sb.appendln("${ChatColor.DARK_GREEN}===============")
+    sb.appendln("${ChatColor.DARK_GREEN}  Entity Info  ")
+    sb.appendln("${ChatColor.DARK_GREEN}===============")
     sb.appendln("${ChatColor.DARK_GREEN}Type: ${ChatColor.GREEN}${rightClicked.type.name.capitalizeBukkitEnumName()}")
 
     if (rightClicked is LivingEntity) {
@@ -227,7 +227,7 @@ class App : JavaPlugin(), Listener {
       sb.appendln("${ChatColor.DARK_GREEN}Health: ${ChatColor.GREEN}${(rightClicked.health / maxHealth * 100.0).roundToInt()}%")
     }
 
-    if (rightClicked.name.isNotEmpty()) {
+    if (rightClicked.name.isNotEmpty() && rightClicked.name != rightClicked.type.name) {
       sb.appendln("${ChatColor.DARK_GREEN}Name: ${ChatColor.GREEN}${rightClicked.name}")
     }
 
@@ -258,7 +258,7 @@ class App : JavaPlugin(), Listener {
   @EventHandler
   fun exp(event: PlayerExpChangeEvent) {
     if (event.player.expToLevel <= event.amount) {
-      Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}just levelled up to ${ChatColor.GOLD}${event.player.level + 1}")
+      Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}just levelled up to ${ChatColor.GOLD}${event.player.level + 2}")
     }
   }
 
