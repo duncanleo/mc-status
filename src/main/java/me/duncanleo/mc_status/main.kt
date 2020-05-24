@@ -7,11 +7,15 @@ import me.duncanleo.mc_status.model.discord.DiscordWebhookPayload
 import me.duncanleo.mc_status.model.discord.Embed
 import me.duncanleo.mc_status.model.discord.EmbedField
 import me.duncanleo.mc_status.util.TPSUtil
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
+import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.entity.EntityBreedEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityTameEvent
@@ -21,7 +25,6 @@ import org.bukkit.event.raid.RaidTriggerEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.DisplaySlot
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -270,6 +273,13 @@ class App : JavaPlugin(), Listener {
   fun triggerRaid(event: RaidTriggerEvent) {
     Bukkit.broadcastMessage("${ChatColor.RED}${event.player.displayName} ${ChatColor.DARK_RED}triggered a raid on a village!")
   }
+
+  @EventHandler
+  fun enchantItem(event: EnchantItemEvent) {
+    val enchantments = event.item.enchantments.map { "${it.key} ${it.value.toRomanNumeral()}" }.joinToString(", ")
+    Bukkit.broadcastMessage("${ChatColor.GOLD}${event.enchanter.displayName} ${ChatColor.YELLOW}just enchanted a ${ChatColor.GOLD}${event.item.type.name.capitalizeBukkitEnumName()} ($enchantments) ${ChatColor.YELLOW} at the cost of ${ChatColor.GOLD}${event.expLevelCost} exp levels")
+  }
+
   private fun publishDiscordWebhook(webhookURL: String, payload: DiscordWebhookPayload) {
     val moshi = Moshi.Builder().build()
     val payloadEncoded = moshi
@@ -313,6 +323,26 @@ class App : JavaPlugin(), Listener {
             .replace("_", " ")
             .split(" ")
             .joinToString(" ") { it.capitalize() }
+  }
+
+  /**
+   * Convert a number to roman numeral
+   * https://kodejava.org/how-do-i-convert-number-into-roman-numerals/
+   */
+  private fun Int.toRomanNumeral(): String {
+    return String(CharArray(this)).replace('\u0000', 'I')
+            .replace("IIIII", "V")
+            .replace("IIII", "IV")
+            .replace("VV", "X")
+            .replace("VIV", "IX")
+            .replace("XXXXX", "L")
+            .replace("XXXX", "XL")
+            .replace("LL", "C")
+            .replace("LXL", "XC")
+            .replace("CCCCC", "D")
+            .replace("CCCC", "CD")
+            .replace("DD", "M")
+            .replace("DCD", "CM")
   }
 
   private fun Monster.displayHealth() {
