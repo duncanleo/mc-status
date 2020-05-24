@@ -83,6 +83,9 @@ class App : JavaPlugin(), Listener {
           val pingScore = objective?.getScore("${ChatColor.AQUA}Ping (ms)")
           pingScore?.score = it.ping
 
+          val expScore = objective?.getScore("${ChatColor.GREEN}Exp to level up")
+          expScore?.score = it.expToLevel
+
           // SCOREBOARD!
           if (scoreboard != null) {
             it.scoreboard = scoreboard
