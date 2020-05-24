@@ -17,6 +17,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityTameEvent
 import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.player.*
+import org.bukkit.event.raid.RaidTriggerEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.DisplaySlot
@@ -265,6 +266,10 @@ class App : JavaPlugin(), Listener {
     }
   }
 
+  @EventHandler
+  fun triggerRaid(event: RaidTriggerEvent) {
+    Bukkit.broadcastMessage("${ChatColor.RED}${event.player.displayName} ${ChatColor.DARK_RED}triggered a raid on a village!")
+  }
   private fun publishDiscordWebhook(webhookURL: String, payload: DiscordWebhookPayload) {
     val moshi = Moshi.Builder().build()
     val payloadEncoded = moshi
