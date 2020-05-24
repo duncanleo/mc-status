@@ -166,7 +166,7 @@ class App : JavaPlugin(), Listener {
 
   @EventHandler
   fun playerChangedWorld(event: PlayerChangedWorldEvent) {
-    Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}went to the ${ChatColor.GOLD}${event.player.location.world?.name}")
+    Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}went to ${ChatColor.GOLD}${event.player.location.world?.name?.capitalizeBukkitEnumName()}")
   }
 
   @EventHandler
