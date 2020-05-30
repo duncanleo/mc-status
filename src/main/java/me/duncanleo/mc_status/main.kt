@@ -16,10 +16,7 @@ import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.enchantment.EnchantItemEvent
-import org.bukkit.event.entity.EntityBreedEvent
-import org.bukkit.event.entity.EntityDamageEvent
-import org.bukkit.event.entity.EntityTameEvent
-import org.bukkit.event.entity.EntityTargetEvent
+import org.bukkit.event.entity.*
 import org.bukkit.event.player.*
 import org.bukkit.event.raid.RaidTriggerEvent
 import org.bukkit.plugin.java.JavaPlugin
@@ -30,6 +27,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.roundToInt
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 const val TIME_NIGHT = 13000
 const val CONFIG_KEY_WEBHOOK_URL = "webhook_url"
@@ -284,6 +284,17 @@ class App : JavaPlugin(), Listener {
     completeEnchantments.putAll(event.enchantsToAdd)
     val enchantments = completeEnchantments.map { "${it.key} ${it.value.toRomanNumeral()}" }.joinToString(", ")
     Bukkit.broadcastMessage("${ChatColor.GOLD}${event.enchanter.displayName} ${ChatColor.YELLOW}just enchanted a ${ChatColor.GOLD}${event.item.type.name.capitalizeBukkitEnumName()} ($enchantments) ${ChatColor.YELLOW} at the cost of ${ChatColor.GOLD}${event.expLevelCost} exp levels")
+  }
+
+  @ExperimentalTime
+  @EventHandler
+  fun entityPotionEffect(event: EntityPotionEffectEvent) {
+    if (event.entity !is Player) {
+      return
+    }
+    val durationTicks = event.newEffect?.duration?.div(20) ?: 0
+    val duration = durationTicks.seconds
+    event.entity.sendMessage("${ChatColor.DARK_GREEN}You have received the potion effect ${ChatColor.GREEN}${event.newEffect?.type?.name?.capitalizeBukkitEnumName()} for ${duration.toString(DurationUnit.MINUTES)}")
   }
 
   private fun publishDiscordWebhook(webhookURL: String, payload: DiscordWebhookPayload) {
