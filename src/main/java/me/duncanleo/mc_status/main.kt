@@ -25,6 +25,7 @@ import org.bukkit.event.raid.RaidTriggerEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.DisplaySlot
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -106,7 +107,8 @@ class App : JavaPlugin(), Listener {
 
     object: BukkitRunnable() {
       override fun run() {
-        val currentTime = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME)
+        val dateFormat = SimpleDateFormat("h:mm a")
+        val currentTime = dateFormat.format(Date())
         Bukkit.broadcastMessage("${ChatColor.DARK_PURPLE}It is now ${ChatColor.LIGHT_PURPLE}$currentTime ${ChatColor.DARK_PURPLE} in Singapore")
       }
     }.runTaskTimer(this, 20 * 4, 20 * 60 * 30)
