@@ -76,8 +76,8 @@ class App : JavaPlugin(), Listener {
 
           // Time to day/night
           val isDay = it.world.time < TIME_NIGHT
-          val entryToSet = "${ChatColor.GREEN}Time to ${if (isDay) "Night" else "Day"} (s)"
-          val entryToRemove = "${ChatColor.GREEN}Time to ${if (isDay) "Day" else "Night"} (s)"
+          val entryToSet = "${ChatColor.LIGHT_PURPLE}Time to ${if (isDay) "Night" else "Day"} (s)"
+          val entryToRemove = "${ChatColor.LIGHT_PURPLE}Time to ${if (isDay) "Day" else "Night"} (s)"
           val duration = if (isDay) TIME_NIGHT - it.world.time else 24000 - it.world.time + 1000L
           scoreboard?.resetScores(entryToRemove)
 
@@ -88,7 +88,7 @@ class App : JavaPlugin(), Listener {
           val pingScore = objective?.getScore("${ChatColor.AQUA}Ping (ms)")
           pingScore?.score = it.ping
 
-          val expScore = objective?.getScore("${ChatColor.GREEN}Exp to level up")
+          val expScore = objective?.getScore("${ChatColor.GREEN}Exp ${ChatColor.DARK_GREEN}to next level")
           expScore?.score = it.expToLevel
 
           // SCOREBOARD!
