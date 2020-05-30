@@ -283,7 +283,7 @@ class App : JavaPlugin(), Listener {
     // Add all the new enchantments
     completeEnchantments.putAll(event.enchantsToAdd)
     val enchantments = completeEnchantments.map { "${it.key} ${it.value.toRomanNumeral()}" }.joinToString(", ")
-    Bukkit.broadcastMessage("${ChatColor.GOLD}${event.enchanter.displayName} ${ChatColor.YELLOW}just enchanted a ${ChatColor.GOLD}${event.item.type.name.capitalizeBukkitEnumName()} ($enchantments) ${ChatColor.YELLOW} at the cost of ${ChatColor.GOLD}${event.expLevelCost} exp levels")
+    Bukkit.broadcastMessage("${ChatColor.GOLD}${event.enchanter.displayName} ${ChatColor.YELLOW}just enchanted a ${ChatColor.GOLD}${event.item.type.name.capitalizeBukkitEnumName()} ($enchantments) ${ChatColor.YELLOW} at the cost of ${ChatColor.GOLD}${event.whichButton() + 1} levels ${ChatColor.YELLOW}and ${ChatColor.GOLD}${event.expLevelCost} exp")
   }
 
   @ExperimentalTime
