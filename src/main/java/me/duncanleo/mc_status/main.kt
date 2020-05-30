@@ -246,6 +246,43 @@ class App : JavaPlugin(), Listener {
       sb.appendln("${ChatColor.DARK_GREEN}Tamed: ${if (isTamed) "by ${ChatColor.GREEN}$ownerName" else "no"}")
     }
 
+    if (rightClicked is Ageable) {
+      sb.appendln("${ChatColor.DARK_GREEN}Age: ${rightClicked.age}")
+      sb.appendln("${ChatColor.DARK_GREEN}Adult: ${rightClicked.isAdult}")
+      sb.appendln("${ChatColor.DARK_GREEN}Can Breed: ${rightClicked.canBreed()}")
+    }
+
+    when (rightClicked) {
+      is Cat -> {
+        sb.appendln("${ChatColor.DARK_GREEN}Type: ${rightClicked.catType.name.capitalizeBukkitEnumName()}")
+      }
+      is Ocelot -> {
+        sb.appendln("${ChatColor.DARK_GREEN}Type: ${rightClicked.catType.name.capitalizeBukkitEnumName()}")
+      }
+      is Fox -> {
+        sb.appendln("${ChatColor.DARK_GREEN}Type: ${rightClicked.foxType.name.capitalizeBukkitEnumName()}")
+      }
+      is Parrot -> {
+        sb.appendln("${ChatColor.DARK_GREEN}Variant: ${rightClicked.variant.name.capitalizeBukkitEnumName()}")
+      }
+      is Panda -> {
+        sb.appendln("${ChatColor.DARK_GREEN}Main Gene: ${rightClicked.mainGene.name.capitalizeBukkitEnumName()}")
+        sb.appendln("${ChatColor.DARK_GREEN}Hidden Gene: ${rightClicked.hiddenGene.name.capitalizeBukkitEnumName()}")
+      }
+      is Wolf -> {
+        sb.appendln("${ChatColor.DARK_GREEN}Collar Colour: ${rightClicked.collarColor.name.capitalizeBukkitEnumName()}")
+      }
+      is Horse -> {
+        sb.appendln("${ChatColor.DARK_GREEN}Colour: ${rightClicked.color.name.capitalizeBukkitEnumName()}")
+        sb.appendln("${ChatColor.DARK_GREEN}Style: ${rightClicked.style.name.capitalizeBukkitEnumName()}")
+      }
+      is Llama -> {
+        sb.appendln("${ChatColor.DARK_GREEN}Colour: ${rightClicked.color.name.capitalizeBukkitEnumName()}")
+        sb.appendln("${ChatColor.DARK_GREEN}Strength: ${rightClicked.strength}")
+        sb.appendln("${ChatColor.DARK_GREEN}Jump Strength: ${rightClicked.jumpStrength}")
+      }
+    }
+
     event.player.sendMessage(sb.toString())
   }
 
