@@ -19,6 +19,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.entity.*
 import org.bukkit.event.player.*
 import org.bukkit.event.raid.RaidTriggerEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.DisplaySlot
@@ -67,17 +68,17 @@ class App : JavaPlugin(), Listener {
           objective?.displaySlot = DisplaySlot.SIDEBAR
 
           // TPS score
-          val tpsScore = objective?.getScore("${ChatColor.DARK_AQUA}TPS")
+          val tpsScore = objective?.getScore("${ChatColor.DARK_GRAY}Server TPS")
           tpsScore?.score = tps.toInt()
 
           // RAM usage score
-          val ramUsageScore = objective?.getScore("${ChatColor.DARK_AQUA}RAM Usage (%)")
+          val ramUsageScore = objective?.getScore("${ChatColor.DARK_GRAY}Server RAM Usage (%)")
           ramUsageScore?.score = ((freeMemory.toDouble() / totalMemory.toDouble()) * 100.0).toInt()
 
           // Time to day/night
           val isDay = it.world.time < TIME_NIGHT
-          val entryToSet = "${ChatColor.LIGHT_PURPLE}Time to ${if (isDay) "Night" else "Day"} (s)"
-          val entryToRemove = "${ChatColor.LIGHT_PURPLE}Time to ${if (isDay) "Day" else "Night"} (s)"
+          val entryToSet = "${ChatColor.DARK_PURPLE}Time to ${ChatColor.LIGHT_PURPLE}${if (isDay) "Night" else "Day"} (s)"
+          val entryToRemove = "${ChatColor.DARK_PURPLE}Time to ${ChatColor.LIGHT_PURPLE}${if (isDay) "Day" else "Night"} (s)"
           val duration = if (isDay) TIME_NIGHT - it.world.time else 24000 - it.world.time + 1000L
           scoreboard?.resetScores(entryToRemove)
 
@@ -221,7 +222,7 @@ class App : JavaPlugin(), Listener {
 
   @EventHandler
   fun entityRightClick(event: PlayerInteractEntityEvent) {
-    if (event.player.inventory.itemInMainHand.type != Material.AIR || event.rightClicked !is LivingEntity) {
+    if (event.player.inventory.itemInMainHand.type != Material.AIR || event.rightClicked !is LivingEntity || event.hand != EquipmentSlot.HAND) {
       return
     }
     val rightClicked = event.rightClicked
@@ -326,7 +327,7 @@ class App : JavaPlugin(), Listener {
   @ExperimentalTime
   @EventHandler
   fun entityPotionEffect(event: EntityPotionEffectEvent) {
-    if (event.entity !is Player) {
+    if (event.entity !is Player || event.newEffect == null) {
       return
     }
     val durationTicks = event.newEffect?.duration?.div(20) ?: 0
