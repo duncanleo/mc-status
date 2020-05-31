@@ -88,7 +88,7 @@ class App : JavaPlugin(), Listener {
           pingScore?.score = it.ping
 
           val expScore = objective?.getScore("${ChatColor.GREEN}Exp ${ChatColor.DARK_GREEN}to next level")
-          expScore?.score = it.expToLevel
+          expScore?.score = it.expToNextLevel
 
           // SCOREBOARD!
           if (scoreboard != null) {
@@ -373,6 +373,26 @@ class App : JavaPlugin(), Listener {
 
       return -1
     }
+
+  /**
+   * Get the amount of exp required to the next level
+   * https://minecraft.gamepedia.com/Experience#Leveling_up
+   */
+  val Player.expToNextLevel: Int
+    get() {
+      return when {
+        (this.level >= 31) -> {
+          9 * this.level - 158
+        }
+        (this.level >= 16) -> {
+          5 * this.level - 38
+        }
+        else -> {
+          2 * this.level + 7
+        }
+      }
+    }
+
 
   private fun String.capitalizeBukkitEnumName(): String {
     return this
