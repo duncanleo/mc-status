@@ -199,14 +199,12 @@ class App : JavaPlugin(), Listener {
 
     when (event.reason) {
       EntityTargetEvent.TargetReason.TARGET_DIED,
-      EntityTargetEvent.TargetReason.TEMPT -> {
+      EntityTargetEvent.TargetReason.TEMPT,
+      EntityTargetEvent.TargetReason.FORGOT_TARGET-> {
         return
       }
-      EntityTargetEvent.TargetReason.FORGOT_TARGET -> {
-        player.sendMessage("${ChatColor.DARK_AQUA}You are no longer being targeted by a ${ChatColor.AQUA}${event.entity.type.name.capitalizeBukkitEnumName()}.")
-      }
       else -> {
-        player.sendMessage("${ChatColor.DARK_AQUA}You are being ${ChatColor.RED}targeted ${ChatColor.DARK_AQUA}by a ${ChatColor.AQUA}${event.entity.type.name.capitalizeBukkitEnumName()}. ${ChatColor.DARK_AQUA}Reason: ${ChatColor.AQUA}${event.reason.name.capitalizeBukkitEnumName()}")
+        player.sendMessage("${ChatColor.DARK_AQUA}Targeted ${ChatColor.DARK_AQUA}by ${ChatColor.RED}${event.entity.type.name.capitalizeBukkitEnumName()} ${ChatColor.DARK_AQUA}(${event.reason.name.capitalizeBukkitEnumName()})")
       }
     }
   }
