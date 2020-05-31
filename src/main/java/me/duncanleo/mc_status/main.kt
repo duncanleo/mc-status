@@ -309,6 +309,14 @@ class App : JavaPlugin(), Listener {
   }
 
   @EventHandler
+  fun entityDied(event: EntityDeathEvent) {
+    if (event.entity !is Monster || event.entity.killer == null) {
+      return
+    }
+    event.entity.killer?.sendMessage("${ChatColor.DARK_AQUA}Killed ${ChatColor.AQUA}${event.entityType.name.capitalizeBukkitEnumName()} ${ChatColor.DARK_AQUA}for ${ChatColor.GOLD}${event.droppedExp} exp (orb)")
+  }
+
+  @EventHandler
   fun enchantItem(event: EnchantItemEvent) {
     // Get a copy of existing enchantments
     val completeEnchantments = HashMap(event.item.enchantments)
