@@ -24,8 +24,6 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.DisplaySlot
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
@@ -301,10 +299,8 @@ class App : JavaPlugin(), Listener {
   }
 
   @EventHandler
-  fun exp(event: PlayerExpChangeEvent) {
-    if (event.player.expToLevel <= event.amount) {
-      Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}just levelled up to ${ChatColor.GOLD}${event.player.level + 2}")
-    }
+  fun playerLevelChange(event: PlayerLevelChangeEvent) {
+    Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}just levelled up to ${ChatColor.GOLD}${event.newLevel}")
   }
 
   @EventHandler
