@@ -208,7 +208,7 @@ class App : JavaPlugin(), Listener {
   }
 
   @EventHandler
-  fun entityDamageByOtherEntity(event: EntityDamageEvent) {
+  fun entityDamaged(event: EntityDamageEvent) {
     if (event.entity !is Monster) {
       return
     }
@@ -310,10 +310,32 @@ class App : JavaPlugin(), Listener {
 
   @EventHandler
   fun entityDied(event: EntityDeathEvent) {
-    if (event.entity !is Monster || event.entity.killer == null) {
+    if (event.entity !is Monster) {
       return
     }
-    event.entity.killer?.sendMessage("${ChatColor.DARK_AQUA}Killed ${ChatColor.AQUA}${event.entityType.name.capitalizeBukkitEnumName()} ${ChatColor.DARK_AQUA}for ${ChatColor.GOLD}${event.droppedExp} exp (orb)")
+
+    val lastDamageCause = event.entity.lastDamageCause
+
+    if (lastDamageCause !is EntityDamageByEntityEvent) {
+      return
+    }
+
+    val player = when (lastDamageCause.cause) {
+      EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+      EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK-> {
+        lastDamageCause.damager as Player
+      }
+      EntityDamageEvent.DamageCause.PROJECTILE -> {
+        val projectile = lastDamageCause.damager as Projectile
+        projectile.shooter as Player
+      }
+      else -> {
+        return
+      }
+    }
+
+    event.entity.lastDamageCause?.entity
+    player.sendMessage("${ChatColor.DARK_AQUA}Killed ${ChatColor.AQUA}${event.entityType.name.capitalizeBukkitEnumName()} ${ChatColor.DARK_AQUA}for ${ChatColor.GOLD}${event.droppedExp} exp (orb)")
   }
 
   @EventHandler
