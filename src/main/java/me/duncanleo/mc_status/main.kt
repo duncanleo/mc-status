@@ -300,7 +300,7 @@ class App : JavaPlugin(), Listener {
 
   @EventHandler
   fun playerLevelChange(event: PlayerLevelChangeEvent) {
-    Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}just levelled up to ${ChatColor.GOLD}${event.newLevel}")
+    Bukkit.broadcastMessage("${ChatColor.GOLD}${event.player.displayName} ${ChatColor.YELLOW}just levelled ${if (event.newLevel > event.oldLevel) "up" else "down"} to ${ChatColor.GOLD}${event.newLevel}")
   }
 
   @EventHandler
