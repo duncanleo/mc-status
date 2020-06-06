@@ -184,7 +184,7 @@ class App : JavaPlugin(), Listener {
     }
 
     val player = event.target as Player
-    
+
     when (event.reason) {
       EntityTargetEvent.TargetReason.TARGET_DIED,
       EntityTargetEvent.TargetReason.TEMPT,
@@ -428,9 +428,9 @@ class App : JavaPlugin(), Listener {
             .replace("DCD", "CM")
   }
 
-  private fun Monster.displayHealth() {
-    val maxHealth = this.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 0.0
-    this.customName = "${ChatColor.RED}${(this.health / maxHealth * 100.0).roundToInt()}%"
-    this.isCustomNameVisible = true
-  }
+  val Monster.healthPercentage: Int
+    get() {
+      val maxHealth = this.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 0.0
+      return (this.health / maxHealth * 100.0).roundToInt()
+    }
 }
