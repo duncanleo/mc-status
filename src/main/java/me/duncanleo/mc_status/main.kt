@@ -323,6 +323,9 @@ class App : JavaPlugin(), Listener {
     val player = when (lastDamageCause.cause) {
       EntityDamageEvent.DamageCause.ENTITY_ATTACK,
       EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK-> {
+        if (lastDamageCause.damager !is Player) {
+          return
+        }
         lastDamageCause.damager as Player
       }
       EntityDamageEvent.DamageCause.PROJECTILE -> {
