@@ -184,17 +184,7 @@ class App : JavaPlugin(), Listener {
     }
 
     val player = event.target as Player
-
-    when (event.entity) {
-      is ExperienceOrb -> {
-        return
-      }
-      is Monster -> {
-        val monster = (event.entity as Monster)
-        monster.displayHealth()
-      }
-    }
-
+    
     when (event.reason) {
       EntityTargetEvent.TargetReason.TARGET_DIED,
       EntityTargetEvent.TargetReason.TEMPT,
@@ -205,15 +195,6 @@ class App : JavaPlugin(), Listener {
         player.sendMessage("${ChatColor.DARK_AQUA}Targeted ${ChatColor.DARK_AQUA}by ${ChatColor.RED}${event.entity.type.name.capitalizeBukkitEnumName()} ${ChatColor.DARK_AQUA}(${event.reason.name.capitalizeBukkitEnumName()})")
       }
     }
-  }
-
-  @EventHandler
-  fun entityDamaged(event: EntityDamageEvent) {
-    if (event.entity !is Monster) {
-      return
-    }
-    val monster = (event.entity as Monster)
-    monster.displayHealth()
   }
 
   @EventHandler
