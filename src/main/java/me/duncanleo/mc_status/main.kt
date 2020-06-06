@@ -230,6 +230,11 @@ class App : JavaPlugin(), Listener {
       sb.appendln("${ChatColor.DARK_GREEN}Can Breed: ${rightClicked.canBreed()}")
     }
 
+    if (rightClicked is Villager) {
+      sb.appendln("${ChatColor.DARK_GREEN}Profession: ${rightClicked.profession.name.capitalizeBukkitEnumName()}")
+      sb.appendln("${ChatColor.DARK_GREEN}Type: ${rightClicked.villagerType.name.capitalizeBukkitEnumName()}")
+    }
+
     when (rightClicked) {
       is Cat -> {
         sb.appendln("${ChatColor.DARK_GREEN}Type: ${rightClicked.catType.name.capitalizeBukkitEnumName()}")
