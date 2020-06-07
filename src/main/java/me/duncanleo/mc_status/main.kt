@@ -7,10 +7,7 @@ import me.duncanleo.mc_status.model.discord.DiscordWebhookPayload
 import me.duncanleo.mc_status.model.discord.Embed
 import me.duncanleo.mc_status.model.discord.EmbedField
 import me.duncanleo.mc_status.util.TPSUtil
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.Location
-import org.bukkit.Material
+import org.bukkit.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
@@ -111,6 +108,44 @@ class App : JavaPlugin(), Listener {
         Bukkit.broadcastMessage("${ChatColor.DARK_PURPLE}It is now ${ChatColor.LIGHT_PURPLE}$currentTime ${ChatColor.DARK_PURPLE} in Singapore")
       }
     }.runTaskTimer(this, 20 * 4, 20 * 60 * 30)
+
+    val timeAnnounceIntervalTicks = 20 * 5
+    object: BukkitRunnable() {
+      override fun run() {
+        fun generateRange(ticks: Int): IntRange {
+          return (ticks - timeAnnounceIntervalTicks)..(ticks + timeAnnounceIntervalTicks)
+        }
+
+        Bukkit.getWorlds().forEach {
+          if (it.environment == World.Environment.NETHER) {
+            // Ignore nether
+            return
+          }
+          when (it.time) {
+            in generateRange(0) -> {
+              it.players.forEach { player ->
+                player.sendMessage("${ChatColor.DARK_PURPLE}[TIME] ${ChatColor.LIGHT_PURPLE}0600 ${ChatColor.DARK_PURPLE}${ChatColor.ITALIC}(Villagers wake up now.)")
+              }
+            }
+            in generateRange(2000) -> {
+              it.players.forEach { player ->
+                player.sendMessage("${ChatColor.DARK_PURPLE}[TIME] ${ChatColor.LIGHT_PURPLE}0800 ${ChatColor.DARK_PURPLE}${ChatColor.ITALIC}(Villagers start work.)")
+              }
+            }
+            in generateRange(9000) -> {
+              it.players.forEach { player ->
+                player.sendMessage("${ChatColor.DARK_PURPLE}[TIME] ${ChatColor.LIGHT_PURPLE}1500 ${ChatColor.DARK_PURPLE}${ChatColor.ITALIC}(Villagers end work and socialise.)")
+              }
+            }
+            in generateRange(12000) -> {
+              it.players.forEach { player ->
+                player.sendMessage("${ChatColor.DARK_PURPLE}[TIME] ${ChatColor.LIGHT_PURPLE}1800 ${ChatColor.DARK_PURPLE}${ChatColor.ITALIC}(Villagers head to bed.)")
+              }
+            }
+          }
+        }
+      }
+    }.runTaskTimer(this, 20 * 4, timeAnnounceIntervalTicks.toLong())
   }
 
   @EventHandler
