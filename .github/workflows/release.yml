@@ -24,7 +24,7 @@ jobs:
           output-file: 'false'
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: 'build/libs'
+          artifacts: 'build/libs/*.jar'
           body: ${{ steps.changelog.outputs.clean_changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ steps.changelog.outputs.tag }}
