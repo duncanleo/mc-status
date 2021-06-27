@@ -408,7 +408,7 @@ class App : JavaPlugin(), Listener {
     get() {
       try {
         val entityPlayer = this.javaClass.getMethod("getHandle").invoke(this)
-        val ping = entityPlayer.javaClass.getField("ping").get(entityPlayer) as? Int
+        val ping = entityPlayer.javaClass.getField("latency").get(entityPlayer) as? Int
 
         if (ping != null) {
           return ping
