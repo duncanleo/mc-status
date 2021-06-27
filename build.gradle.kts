@@ -29,7 +29,7 @@ repositories {
 dependencies {
   implementation(kotlin("stdlib"))
 
-  implementation("org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT")
+  implementation("org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT")
   implementation("com.github.kittinunf.fuel:fuel:2.2.2")
   implementation("com.squareup.moshi:moshi:1.9.2")
   kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.2")
